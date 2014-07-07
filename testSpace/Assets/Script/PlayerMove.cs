@@ -81,8 +81,15 @@ public class PlayerMove : MonoBehaviour {
 
 		powerVec = powerVec.normalized;
 		
-		mRigidBody.AddForce(powerVec * power);
+		//mRigidBody.AddForce(powerVec * power);
 
+		Vector3 front = Camera.mainCamera.transform.TransformDirection(Vector3.forward);
+		Vector3 right = Camera.mainCamera.transform.TransformDirection(Vector3.right);
+		Vector3 up =  Camera.mainCamera.transform.TransformDirection(Vector3.up);
+
+		powerVec = powerX * right + powerY * up + powerZ * front;
+		powerVec *= power;
+		rigidbody.AddForce(powerVec);
 
 //
 //				// カメラの回転（仮）.
