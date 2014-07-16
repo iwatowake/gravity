@@ -11,6 +11,7 @@ public class PlayerMove : MonoBehaviour {
 	
 	private Vector3 moveDirection = Vector3.zero;
 	private    CharacterController controller;
+	private	 Rigidbody mRigidBody;
 
 	public Vector3 mForcePosR;
 	public Vector3 mForcePosL;
@@ -37,6 +38,7 @@ public class PlayerMove : MonoBehaviour {
 		// 通常状態.
 		state = STATE.STATE_MOVE;
 
+		mRigidBody = GetComponent<Rigidbody>();
 
 		mForcePosL = new Vector3(-0.25f,0.0f,0.0f);
 		mForcePosR = new Vector3(0.25f,0.0f,0.0f);
@@ -80,6 +82,7 @@ public class PlayerMove : MonoBehaviour {
 		// final direction
 		Vector3 rotateVec = new Vector3(rotX,rotY,rotZ);
 		
+		mRigidBody.transform.Rotate(rotateVec);
 
 		// powers
 		float powerY = 0.0f;
@@ -108,6 +111,7 @@ public class PlayerMove : MonoBehaviour {
 
 		powerVec = powerX * right + powerY * up + powerZ * front;
 		powerVec *= power;
+		rigidbody.AddForce(powerVec);
 
 
 		if(Input.GetButtonDown("Jump")){
