@@ -5,8 +5,8 @@ public class PlayerMove : MonoBehaviour {
 	
 	
 	public float speed = 6.0F;
-	public float jumpSpeed = 8.0F;
-	public    float    rotateSpeed=10f;
+	public float jumpSpeed = 1.0F;
+	public float    rotateSpeed=10f;
 	public float gravity = 20.0F;
 	
 	private Vector3 moveDirection = Vector3.zero;
@@ -20,10 +20,24 @@ public class PlayerMove : MonoBehaviour {
 	float mCameraRotY = 0f;
 	float mCameraRotZ = 0f;
 
+	enum STATE{
+		STATE_MOVE,
+		STATE_JUMP,
+
+	}
+
+	STATE state;
+
+	public OVRCamera ovrCamera;
+
 	public float power = 1.0f;
 
 	// Use this for initialization
 	void Start () {
+
+		// 通常状態.
+		state = STATE.STATE_MOVE;
+
 		mRigidBody = GetComponent<Rigidbody>();
 
 		mForcePosL = new Vector3(-0.25f,0.0f,0.0f);
@@ -33,24 +47,32 @@ public class PlayerMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		CameraAxisControl();
-		jumpControl();
-		//attachMove();
-		//attachRotation();
-	}
-	
-	//標準的なコントロール
-	void  NormalControl(){
 
+		switch(state){
+		case STATE.STATE_MOVE:
+			moveControl();
+			break;
+		case STATE.STATE_JUMP:
+			jumpControl();
+			break;
+
+		}
 	}
-	
-	//カメラ軸に沿った移動コントロール
-	void  CameraAxisControl(){
+
+	void jumpControl() {
+
+		Vector3 speed = ovrCamera.transform.forward;
+		transform.position += speed * jumpSpeed;
+
+		if(Input.GetButtonDown("Jump")){
+			
+			state = STATE.STATE_MOVE;
+		}
 
 	}
 	
 	//標準的なジャンプコントロール
-	void jumpControl (){
+	void moveControl (){
 
 		// rotate
 		float rotX = Input.GetAxisRaw("Vertical2");
@@ -91,6 +113,11 @@ public class PlayerMove : MonoBehaviour {
 		powerVec *= power;
 		rigidbody.AddForce(powerVec);
 
+
+		if(Input.GetButtonDown("Jump")){
+
+			state = STATE.STATE_JUMP;
+		}
 //
 //				// カメラの回転（仮）.
 //		if(Input.GetKeyDown(KeyCode.UpArrow)){
