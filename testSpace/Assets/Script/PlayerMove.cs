@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerMove : MonoBehaviour {
 	
 	
-	public float speed = 6.0F;
+	Vector3 speed;
 	public float jumpSpeed = 1.0F;
 	public float    rotateSpeed=10f;
 	public float gravity = 20.0F;
@@ -61,17 +61,27 @@ public class PlayerMove : MonoBehaviour {
 
 	void jumpControl() {
 
-		Vector3 speed = ovrCamera.transform.forward;
+
 		transform.position += speed * jumpSpeed;
 
 		if(Input.GetButtonDown("Jump")){
 			
 			state = STATE.STATE_MOVE;
+			//speed = ovrCamera.transform.forward;
+
+		}
+
+		//デバッグ用戻し（RBで初期位置にもどります）.
+		if(Input.GetButtonDown("jetR")){
+			transform.position = Vector3.zero;
+			state = STATE.STATE_MOVE;
+			speed = Vector3.zero;
+
 		}
 
 	}
 	
-	//標準的なジャンプコントロール
+	// 主に体の回転
 	void moveControl (){
 
 		// rotate
@@ -84,78 +94,58 @@ public class PlayerMove : MonoBehaviour {
 		
 		mRigidBody.transform.Rotate(rotateVec);
 
-		// powers
-		float powerY = 0.0f;
-		float powerX = Input.GetAxisRaw("Horizontal");
-		float powerZ = Input.GetAxisRaw("Vertical");
-
-		// RButton
-		if(Input.GetButton("jetR")){
-			powerY = 1.0f;
-		}
-		// RTrigger
-		if(Input.GetAxisRaw("RT") != 0.0f){
-			powerY = -1.0f;
-		}
-
-		// final direction
-		Vector3 powerVec = new Vector3(powerX,powerY,powerZ);
-
-		powerVec = powerVec.normalized;
-		
-		//mRigidBody.AddForce(powerVec * power);
-
-		Vector3 front = Camera.mainCamera.transform.TransformDirection(Vector3.forward);
-		Vector3 right = Camera.mainCamera.transform.TransformDirection(Vector3.right);
-		Vector3 up =  Camera.mainCamera.transform.TransformDirection(Vector3.up);
-
-		powerVec = powerX * right + powerY * up + powerZ * front;
-		powerVec *= power;
-		rigidbody.AddForce(powerVec);
+// ぷれいやーの移動はとりあえず消します.
+//		// powers
+//		float powerY = 0.0f;
+//		float powerX = Input.GetAxisRaw("Horizontal");
+//		float powerZ = Input.GetAxisRaw("Vertical");
+//
+//		// RButton
+//		if(Input.GetButton("jetR")){
+//			powerY = 1.0f;
+//		}
+//		// RTrigger
+//		if(Input.GetAxisRaw("RT") != 0.0f){
+//			powerY = -1.0f;
+//		}
+//
+//		// final direction
+//		Vector3 powerVec = new Vector3(powerX,powerY,powerZ);
+//
+//		powerVec = powerVec.normalized;
+//		
+//		//mRigidBody.AddForce(powerVec * power);
+//
+//		Vector3 front = Camera.mainCamera.transform.TransformDirection(Vector3.forward);
+//		Vector3 right = Camera.mainCamera.transform.TransformDirection(Vector3.right);
+//		Vector3 up =  Camera.mainCamera.transform.TransformDirection(Vector3.up);
+//
+//		powerVec = powerX * right + powerY * up + powerZ * front;
+//		powerVec *= power;
+//		rigidbody.AddForce(powerVec);
 
 
 		if(Input.GetButtonDown("Jump")){
 
 			state = STATE.STATE_JUMP;
-		}
-//
-//				// カメラの回転（仮）.
-//		if(Input.GetKeyDown(KeyCode.UpArrow)){
-//			mCameraRotX += 0.1f;
-//		}
-//		else if(Input.GetKeyDown(KeyCode.DownArrow)){
-//			mCameraRotX -= 0.1f;
-//		}
-//		if(Input.GetKeyDown(KeyCode.RightArrow)){
-//			mCameraRotY += 0.1f;
-//
-//		}
-//		else if(Input.GetKeyDown(KeyCode.LeftArrow)){
-//			mCameraRotY -= 0.1f;
-//		}
-//
-////		Camera.mainCamera.transform.Rotate(new Vector3(mCameraRotX,mCameraRotY,mCameraRotZ));
 
-	}
-	
-	//移動処理 
-	void attachMove (){
-		//moveDirection.y -= gravity * Time.deltaTime;
-	}
-	
-	//キャラクターを進行方向へ向ける処理 
-	void attachRotation(){
-		var moveDirectionYzero = -moveDirection;
-		moveDirectionYzero.y=0;
+			// この時向いている方向に飛んでく.
+			speed = Camera.mainCamera.transform.TransformDirection(Vector3.forward);
+			speed = speed.normalized;
 
-		//ベクトルの２乗の長さを返しそれが0.001以上なら方向を変える（０に近い数字なら方向を変えない） 
-		if (moveDirectionYzero.sqrMagnitude > 0.001){
-			
-			//２点の角度をなだらかに繋げながら回転していく処理（stepがその変化するスピード） 
-			float    step = rotateSpeed*Time.deltaTime;
-			Vector3 newDir = Vector3.RotateTowards(transform.forward,moveDirectionYzero,step,0f);
-			
-			transform.rotation = Quaternion.LookRotation(newDir);
 		}
 	}
+
+	// 壁とかに当たった時.
+	void OnCollisionEnter(Collision col)
+	{
+		Debug.Log(col.collider.gameObject.tag);
+
+		if(col.collider.gameObject.tag == "EnableArea"){
+			speed = Vector3.zero;
+			state = STATE.STATE_MOVE;
+		}
+	}
+
+
 }
