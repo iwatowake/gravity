@@ -144,6 +144,9 @@ public class PlayerMove : MonoBehaviour {
 			speed = Vector3.zero;
 			state = STATE.STATE_MOVE;
 			rigidbody.velocity = Vector3.zero;
+
+			RigidbodyConstraints con = new RigidbodyConstraints();
+
 			transform.parent = col.gameObject.transform.parent;
 		}
 	}
