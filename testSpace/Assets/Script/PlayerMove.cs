@@ -82,7 +82,6 @@ public class PlayerMove : MonoBehaviour {
 	
 	// 主に体の回転
 	void moveControl (){
-
 		// rotate
 		float rotX = Input.GetAxisRaw("Vertical2");
 		float rotY = Input.GetAxisRaw("Horizontal2");
