@@ -83,9 +83,18 @@ public class PlayerMove : MonoBehaviour {
 	// 主に体の回転
 	void moveControl (){
 		// rotate
-		float rotX = Input.GetAxisRaw("Vertical2");
-		float rotY = Input.GetAxisRaw("Horizontal2");
+		float rotX = 0.0f;
+		float rotY = 0.0f;
 		float rotZ = 0.0f;
+
+		if (Input.GetJoystickNames().Length > 0) 
+		{
+			rotX = Input.GetAxisRaw ("Vertical2");
+			rotY = Input.GetAxisRaw ("Horizontal2");
+		} else {
+			rotX = Input.GetAxisRaw("Vertical");
+			rotY = Input.GetAxisRaw("Horizontal");
+		}
 		
 		// final direction
 		Vector3 rotateVec = new Vector3(rotX,rotY,rotZ);
@@ -123,9 +132,9 @@ public class PlayerMove : MonoBehaviour {
 //		rigidbody.AddForce(powerVec);
 
 
-		if(Input.GetButtonDown("Jump")){
-
+		if(Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.B)){
 			transform.parent = null;
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 
 			state = STATE.STATE_JUMP;
 
@@ -144,10 +153,10 @@ public class PlayerMove : MonoBehaviour {
 			speed = Vector3.zero;
 			state = STATE.STATE_MOVE;
 			rigidbody.velocity = Vector3.zero;
+			rigidbody.angularVelocity = Vector3.zero;
+			rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
-			RigidbodyConstraints con = new RigidbodyConstraints();
-
-			transform.parent = col.gameObject.transform.parent;
+			transform.parent = col.gameObject.transform;
 		}
 	}
 
