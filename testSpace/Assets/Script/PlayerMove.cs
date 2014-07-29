@@ -9,16 +9,16 @@ public class PlayerMove : MonoBehaviour {
 	public float    rotateSpeed=10f;
 	public float gravity = 20.0F;
 	
-	private Vector3 moveDirection = Vector3.zero;
+//	private Vector3 moveDirection = Vector3.zero;
 	private    CharacterController controller;
 	private	 Rigidbody mRigidBody;
 
 	public Vector3 mForcePosR;
 	public Vector3 mForcePosL;
 
-	float mCameraRotX = 0f;
-	float mCameraRotY = 0f;
-	float mCameraRotZ = 0f;
+//	float mCameraRotX = 0f;
+//	float mCameraRotY = 0f;
+//	float mCameraRotZ = 0f;
 
 	enum STATE{
 		STATE_MOVE,
@@ -60,9 +60,8 @@ public class PlayerMove : MonoBehaviour {
 	}
 
 	void jumpControl() {
-
-
-		transform.position += speed * jumpSpeed;
+	
+		//transform.position += speed * jumpSpeed;
 
 		if(Input.GetButtonDown("Jump")){
 			
@@ -127,23 +126,26 @@ public class PlayerMove : MonoBehaviour {
 
 		if(Input.GetButtonDown("Jump")){
 
+			transform.parent = null;
+
 			state = STATE.STATE_JUMP;
 
 			// この時向いている方向に飛んでく.
-			speed = Camera.mainCamera.transform.TransformDirection(Vector3.forward);
+			speed = Camera.main.transform.TransformDirection(Vector3.forward);
 			speed = speed.normalized;
 
+			rigidbody.AddForce(speed * jumpSpeed);
 		}
 	}
 
 	// 壁とかに当たった時.
 	void OnCollisionEnter(Collision col)
 	{
-		Debug.Log(col.collider.gameObject.tag);
-
-		if(col.collider.gameObject.tag == "EnableArea"){
+		if (state == STATE.STATE_JUMP) {
 			speed = Vector3.zero;
 			state = STATE.STATE_MOVE;
+			rigidbody.velocity = Vector3.zero;
+			transform.parent = col.gameObject.transform.parent;
 		}
 	}
 
