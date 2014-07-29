@@ -23,11 +23,11 @@ public class FloorManager : MonoBehaviour {
 		FLOOR_MAX,
 	};
 
-	int floorNum = 12;
+	public int floorNum = 12;
+	public int floorSpan = 20;
 
 	// Use this for initialization
 	void Start () {
-	
 
 		Vector3 pos = new Vector3(0f,0f,0f);
 		GameObject floor = null;
@@ -78,7 +78,7 @@ public class FloorManager : MonoBehaviour {
 			if(floor != null)
 				floor.transform.position = pos;
 
-			pos.z += 20f;
+			pos.z += floorSpan;
 
 		}
 	}
