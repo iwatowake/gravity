@@ -62,6 +62,7 @@ public class Floor : MonoBehaviour {
 
 	public void sendEndMessage(){
 		isEnd = false;
+		GameObject.Find("FloorManager").GetComponent<FloorManager>().SetCreate();
 
 	}
 
@@ -77,7 +78,6 @@ public class Floor : MonoBehaviour {
 	// 端っこかをセット.
 	public void setEnd(bool flg){
 		isEnd = flg;
-		GameObject.Find("FloorManager").GetComponent<FloorManager>().SetCreate();
 	}
 
 	// 
