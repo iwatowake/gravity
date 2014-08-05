@@ -157,6 +157,8 @@ public class PlayerMove : MonoBehaviour {
 			rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
 			transform.parent = col.gameObject.transform;
+
+			col.gameObject.GetComponent<Floor>().sendEndMessage();
 		}
 	}
 

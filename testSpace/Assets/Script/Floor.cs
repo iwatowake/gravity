@@ -61,9 +61,10 @@ public class Floor : MonoBehaviour {
 	}
 
 	public void sendEndMessage(){
-		isEnd = false;
-		GameObject.Find("FloorManager").GetComponent<FloorManager>().SetCreate();
-
+		if (isEnd) {
+			isEnd = false;
+			GameObject.Find ("FloorManager").GetComponent<FloorManager> ().SetCreate ();
+		}
 	}
 
 	public void setTargetPos(Vector3 pos){
