@@ -158,7 +158,7 @@ public class PlayerMove : MonoBehaviour {
 
 			transform.parent = col.gameObject.transform;
 
-			col.gameObject.GetComponent<Floor>().sendEndMessage();
+			col.gameObject.GetComponentInParent<Floor>().sendEndMessage();
 		}
 	}
 
